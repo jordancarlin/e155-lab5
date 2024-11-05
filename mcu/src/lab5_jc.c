@@ -14,9 +14,6 @@ volatile bool currentAChannel = 0, currentBChannel = 0;
 
 int main(void) {
 
-    configureFlash();
-    configureClock();
-
     // Enable inputs for encoder
     gpioEnable(GPIO_PORT_A);
     gpioEnable(GPIO_PORT_B);
@@ -60,7 +57,6 @@ int main(void) {
         }
         pulses = 0;
     }
-
 }
 
 void checkDirection(bool newAChannel, bool newBChannel){
