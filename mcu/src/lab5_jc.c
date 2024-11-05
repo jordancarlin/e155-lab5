@@ -49,7 +49,7 @@ int main(void) {
     float speed = 0.0;
 
     while(1){
-        delay_millis(TIM2, 1000); // wait one second
+        delay_millis(DELAY_TIM, 1000); // wait one second
         printf("Pulses: %d: ", pulses); // Debugging statement to check pulses value
         speed = (float)pulses/480.0; // 120 pulses * 2 (two sensors) * 2 (rising/falling)
         printf("Current speed: %.3f rotations/s", speed);
@@ -64,6 +64,8 @@ int main(void) {
 }
 
 void checkDirection(bool newAChannel, bool newBChannel){
+    // printf("current channels: %d %d\n", currentAChannel, currentBChannel);
+    // printf("new channels: %d %d\n", newAChannel, newBChannel);
     if (!currentAChannel & !currentBChannel) {
         if (newAChannel & !newBChannel) direction = CW;
         else if (!newAChannel & newBChannel) direction = CCW;
@@ -79,6 +81,8 @@ void checkDirection(bool newAChannel, bool newBChannel){
         if (!newAChannel & newBChannel) direction = CW;
         else if (newAChannel & !newBChannel) direction = CCW;
     }
+    currentAChannel = newAChannel;
+    currentBChannel = newBChannel;
 }
 
 void EXTI9_5_IRQHandler(void){
@@ -92,10 +96,12 @@ void EXTI9_5_IRQHandler(void){
         if (digitalRead(ENCODER_A)){
             pulses ++;
             newAChannel = 1;
+            // printf("A rising\n");
         }
         else { // falling edge
             pulses ++;
             newAChannel = 0;
+            // printf("A falling\n");
         }
         checkDirection(newAChannel, newBChannel);
     } else if (EXTI->PR1 & (1 << ENCODER_B_NUM)) {
@@ -103,13 +109,15 @@ void EXTI9_5_IRQHandler(void){
         EXTI->PR1 |= (1 << ENCODER_B_NUM);
 
         // rising edge
-        if (digitalRead(ENCODER_A)){
+        if (digitalRead(ENCODER_B)){
             pulses ++;
             newBChannel = 1;
+            // printf("B rising\n");
         }
         else { // falling edge
             pulses ++;
             newBChannel = 0;
+            // printf("B falling\n");
         }
         checkDirection(newAChannel, newBChannel);
     }
