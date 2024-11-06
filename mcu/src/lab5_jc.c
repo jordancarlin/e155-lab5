@@ -47,13 +47,15 @@ int main(void) {
 
     while(1){
         delay_millis(DELAY_TIM, 1000); // wait one second
-        printf("Pulses: %d: ", pulses); // Debugging statement to check pulses value
+        // printf("Pulses: %d: ", pulses); // Debugging statement to check pulses value
         speed = (float)pulses/480.0; // 120 pulses * 2 (two sensors) * 2 (rising/falling)
-        printf("Current speed: %.3f rotations/s", speed);
-        if (direction) {
-            printf(" in CCW direction\n");
-        } else {
-            printf(" in CW direction\n");
+        printf("\nCurrent speed: %.3f rotations/s", speed);
+        if (speed != 0.0){
+            if (direction) {
+                printf(" in CCW direction");
+            } else {
+                printf(" in CW direction");
+            }
         }
         pulses = 0;
     }
